@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 
 //create your first component
 const Home = () => {	
-	const [list, setList] = useState(()=>{
-		const savedList = localStorage.getItem("ToDoList");
-		return savedList ? JSON.parse(savedList) : [];
-	})
+	const [list, setList] = useState([])
 
-	useEffect(()=>{
+	useEffect(async()=>{
+		const result = await fetch(`https://playground.4geeks.com/todo/users/Styoks`)
+		const data = await result.json()
+		setList(data.todos)
+		console.log(data.todos)
+		
 
-		localStorage.setItem("ToDoList", JSON.stringify(list))
-
-	}, [list])
+	}, [])
 	
 	function enterPressed (event) {
 		if (event.keyCode === 13 && event.target.value !== ""){
@@ -45,7 +45,7 @@ const Home = () => {
 				<input className="w-100 input-group-text" type="text" onKeyDown={enterPressed} />
 				<ul className="list-group mt-5">
 				{ list.map((item, index) => {
-					return <li key={index} id={index} className="list-group-item justify-content-between d-flex liColor">{item}<button className="closeButton rounded-3" type="button" onClick={()=>removeTask(index)}><strong>x</strong></button></li>
+					return <li key={index} id={index} className="list-group-item justify-content-between d-flex liColor">{item.label}<button className="closeButton rounded-3" type="button" onClick={()=>removeTask(index)}><strong>x</strong></button></li>
 				}) }
 				<li className="list-group-item liColor">{finalMessage}</li>
 				</ul>
